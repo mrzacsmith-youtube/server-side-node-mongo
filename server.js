@@ -6,6 +6,7 @@ const morgan = require('morgan')
 
 const homeRouter = require('./routes/home.js')
 const registerRouter = require('./routes/register.js')
+const loginRouter = require('./routes/login.js')
 
 mongoose.connect(
   'mongodb://localhost/serverSide',
@@ -29,6 +30,7 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, 'public')))
 app.use('/', homeRouter)
 app.use('/register', registerRouter)
+app.use('/login', loginRouter)
 
 const PORT = 5995
 app.listen(PORT, () => {

@@ -30,7 +30,12 @@
             <input type="text" name='email' placeholder="Email"><br>
             <input type="password" name='password' placeholder="Password"><br>
             <input type="submit" value='sign up'>
-
+        </form>
+        <h2>Login</h2>
+        <form action="/login" method="POST">
+            <input type="text" name="email" placeholder="Email"><br>
+            <input type="password" name="password" placeholder="Password"><br>
+            <input type="submit" value=" log in">
         </form>
     </div>
 </body>
