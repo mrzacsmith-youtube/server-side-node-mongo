@@ -14,9 +14,29 @@ router.post('/', (req, res) => {
       return
     }
 
+    if (users.length === 0) {
+      res.json({
+        confirmation: 'failed',
+        message: 'User not found',
+      })
+      return
+    }
+
+    const user = users[0]
+
+    // check password
+
+    if (user.password != req.body.password) {
+      res.json({
+        confirmation: 'failed',
+        message: 'User and/or password is incorrect',
+      })
+      return
+    }
+
     res.json({
       confirmation: 'success',
-      user: users,
+      user: user,
     })
   })
 })
