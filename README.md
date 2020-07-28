@@ -3,3 +3,7 @@
 ### Dependencies
 
 - express
+- mongoose
+- helmet
+- morgan
+- hjs
