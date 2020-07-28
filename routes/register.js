@@ -10,12 +10,11 @@ router.post('/', (req, res) => {
       })
       return
     }
-  })
 
-  res.json({
-    confirmation: 'success',
-    // data: req.body,
-    user: req.body,
+    res.json({
+      confirmation: 'success',
+      user: user,
+    })
   })
 })
 
