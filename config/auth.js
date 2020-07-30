@@ -31,9 +31,9 @@ module.exports = (passport) => {
         }
 
         // check password
-        if (user.password != req.body.password) {
-          return next(new Error('User and/or password is incorrect.'))
-        }
+        if (bcrypt.compareSync(password, user.password) == false)
+          return next(new Error('Incorrect password'))
+
         return next(null, user)
       })
     }
