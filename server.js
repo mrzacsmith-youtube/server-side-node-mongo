@@ -32,7 +32,13 @@ app.use('/', homeRouter)
 app.use('/register', registerRouter)
 app.use('/login', loginRouter)
 
-const PORT = 5995
+app.use((err, req, res, next) => {
+  res.render('error', {
+    message: err.message,
+  })
+})
+
+const PORT = 5005
 app.listen(PORT, () => {
   console.log(`\n** Server is listening at http://localhost:${PORT} **\n`)
 })
