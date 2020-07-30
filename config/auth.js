@@ -59,11 +59,16 @@ module.exports = (passport) => {
 
         // create new user and hash password
         const hashPassword = bcrypt.hashSync(password, 10)
-        User.create({ email: email, password: hashPassword }, (err, user) => {
-          if (err) return next(err)
+        let isAdmin = false
+        if (email.indexOf('@lambdastudents.com') != -1) isAdmin = true
+        User.create(
+          { email: email, password: hashPassword, isAdmin: isAdmin },
+          (err, user) => {
+            if (err) return next(err)
 
-          return next(null, user)
-        })
+            return next(null, user)
+          }
+        )
       })
     }
   )

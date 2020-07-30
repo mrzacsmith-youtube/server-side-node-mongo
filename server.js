@@ -11,6 +11,7 @@ const homeRouter = require('./routes/home.js')
 const registerRouter = require('./routes/register.js')
 const loginRouter = require('./routes/login.js')
 const accountRouter = require('./routes/account.js')
+const adminRouter = require('./routes/admin.js')
 
 mongoose.connect(
   'mongodb://localhost/serverSide',
@@ -45,6 +46,7 @@ app.use('/', homeRouter)
 app.use('/register', registerRouter)
 app.use('/login', loginRouter)
 app.use('/account', accountRouter)
+app.use('/admin', adminRouter)
 
 app.use((err, req, res, next) => {
   res.render('error', {
