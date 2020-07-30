@@ -30,7 +30,7 @@ module.exports = (passport) => {
           return next(new Error('User and/or password is incorrect.'))
         }
 
-        // check password
+        // check password and compare hash
         if (bcrypt.compareSync(password, user.password) == false)
           return next(new Error('Incorrect password'))
 
