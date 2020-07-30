@@ -5,10 +5,12 @@ const passport = require('passport')
 const session = require('express-session')
 const helmet = require('helmet')
 const morgan = require('morgan')
+const auth = require('./config/auth.js')(passport)
 
 const homeRouter = require('./routes/home.js')
 const registerRouter = require('./routes/register.js')
 const loginRouter = require('./routes/login.js')
+const accountRouter = require('./routes/account.js')
 
 mongoose.connect(
   'mongodb://localhost/serverSide',
@@ -42,6 +44,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use('/', homeRouter)
 app.use('/register', registerRouter)
 app.use('/login', loginRouter)
+app.use('/account', accountRouter)
 
 app.use((err, req, res, next) => {
   res.render('error', {
