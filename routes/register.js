@@ -1,21 +1,11 @@
 const router = require('express').Router()
-const User = require('../models/User.js')
+const passport = require('passport')
 
-router.post('/', (req, res) => {
-  User.create(req.body, (err, user) => {
-    if (err) {
-      res.json({
-        confirmation: 'failed',
-        error: err,
-      })
-      return
-    }
-
-    res.json({
-      confirmation: 'success',
-      user: user,
-    })
+router.post(
+  '/',
+  passport.authenticate('localRegister', {
+    successRedirect: '/account',
   })
-})
+)
 
 module.exports = router
