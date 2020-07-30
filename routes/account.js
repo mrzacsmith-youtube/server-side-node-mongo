@@ -1,9 +1,18 @@
 const router = require('express').Router()
 
 router.get('/', (req, res, next) => {
-  res.json({
-    user: req.user || 'not logged in',
-  })
+  const user = req.user
+
+  if (user == null) {
+    res.redirect('/')
+    return
+  }
+
+  const data = {
+    user: user,
+  }
+
+  res.render('account', data)
 })
 
 router.get('/logout', (req, res, next) => {
