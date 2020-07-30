@@ -1,4 +1,5 @@
 const LocalStrategy = require('passport-local').Strategy
+const bcrypt = require('bcryptjs')
 const User = require('../models/User')
 
 module.exports = (passport) => {
@@ -56,8 +57,9 @@ module.exports = (passport) => {
           return next(new Error('User already exists, please log in!'))
         }
 
-        // create new user
-        User.create({ email: email, password: password }, (err, user) => {
+        // create new user and hash password
+        const hashPassword = bcrypt.hashSync(password, 10)
+        User.create({ email: email, password: hashPassword }, (err, user) => {
           if (err) return next(err)
 
           return next(null, user)

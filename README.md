@@ -10,3 +10,4 @@
 - passport
 - passport-local
 - express-session
+- bcryptjs
