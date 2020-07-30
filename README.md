@@ -6,4 +6,7 @@
 - mongoose
 - helmet
 - morgan
-- hjs
+- hj
+- passport
+- passport-local
+- express-session

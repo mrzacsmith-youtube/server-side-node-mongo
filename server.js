@@ -1,6 +1,8 @@
 const express = require('express')
 const path = require('path')
 const mongoose = require('mongoose')
+const passport = require('passport')
+const session = require('express-session')
 const helmet = require('helmet')
 const morgan = require('morgan')
 
@@ -22,6 +24,15 @@ mongoose.connect(
 
 const app = express()
 app.use(helmet())
+app.use(
+  session({
+    secret: 'this is the secret',
+    resave: true,
+    saveUninitialized: true,
+  })
+)
+app.use(passport.initialize())
+app.use(passport.session())
 app.use(morgan('dev'))
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'hjs')
