@@ -47,24 +47,22 @@ router.get('/additem/:itemid', (req, res) => {
 })
 
 router.get('/removeitem/:itemid', (req, res) => {
-  res.json({
-    confirmation: 'success',
-    data: 'Reset password endpoint',
-    item: item,
-    user: user,
+  const user = req.user
+  if (user == null) {
+    res.redirect('/')
+    return
+  }
+  Item.findById(req.params.itemid, (err, item) => {
+    if (err) {
+      return next(err)
+    }
+    if (item.interested.indexOf(user.id) == -1) {
+      item.interested.pop(user._id)
+      // item.interested.remove(user._id)
+      // item.save()
+      // res.redirect('/')
+    }
   })
-  // const user = req.user
-  // if (user == null) {
-  //   res.redirect('/')
-  //   return
-  // }
-
-  // Item.findById(req.params.itemid, (err, item) => {
-  //   if (err) {
-  //     return next(err)
-  //   }
-  //   // if(item.interested._id)
-  // })
 })
 
 router.post('/resetpassword', (req, res) => {
