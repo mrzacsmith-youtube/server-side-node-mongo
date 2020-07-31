@@ -1,4 +1,5 @@
 const router = require('express').Router()
+const Item = require('../models/Item')
 
 router.get('/', (req, res) => {
   const user = req.user
@@ -12,11 +13,37 @@ router.get('/', (req, res) => {
     return
   }
 
-  const data = {
-    user: user,
+  Item.find(null, (err, items) => {
+    if (err) return next(err)
+
+    const data = {
+      user: user,
+      items: items,
+    }
+
+    res.render('admin', data)
+  })
+})
+
+router.post('/additem', (req, res) => {
+  const user = req.user
+  if (user == null) {
+    res.redirect('/')
+    return
   }
 
-  res.render('admin', data)
+  if (user.isAdmin == false) {
+    res.redirect('/account')
+    return
+  }
+
+  Item.create(req.body, (err, item) => {
+    if (err) {
+      return next(err)
+    }
+
+    res.redirect('/admin')
+  })
 })
 
 module.exports = router
