@@ -52,6 +52,16 @@
             </div>
             <div class="col-4">
                 <h3>My Items</h3>
+                <ol>
+                    {{#interested}}
+                    <li>
+                        <div class='item'>{{ name }}<br />{{ description }} <br /> {{ price }} <br />
+                            <a class='btn btn-danger' href='/account/removeitem/{{id}}'>Remove</a>
+                        </div>
+                    </li>
+                    {{/interested}}
+                </ol>
+
             </div>
         </div>
     </div>

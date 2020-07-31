@@ -1,14 +1,6 @@
 const router = require('express').Router()
 const Item = require('../models/Item')
 
-// const items = [
-//   { name: 'Item 1', description: '', price: 10 },
-//   { name: 'Item 2', description: '', price: 20 },
-//   { name: 'Item 3', description: '', price: 15 },
-//   { name: 'Item 4', description: '', price: 9 },
-//   { name: 'Item 5', description: '', price: 44 },
-// ]
-
 router.get('/', (req, res, next) => {
   const user = req.user
 
@@ -19,11 +11,18 @@ router.get('/', (req, res, next) => {
 
   Item.find(null, (err, items) => {
     if (err) return next(err)
-    const data = {
-      user: user,
-      items: items,
-    }
-    res.render('account', data)
+
+    Item.find({ interested: user._id }, (err, interestedItems) => {
+      if (err) return next(err)
+
+      const data = {
+        user: user,
+        items: items,
+        interested: interestedItems,
+      }
+
+      res.render('account', data)
+    })
   })
 })
 
@@ -42,10 +41,23 @@ router.get('/additem/:itemid', (req, res) => {
     if (item.interested.indexOf(user.id) == -1) {
       item.interested.push(user._id)
       item.save()
-      res.json({
-        item: item,
-      })
+      res.redirect('/account')
     }
+  })
+})
+
+router.get('/removeitem/:itemid', (req, res) => {
+  const user = req.user
+  if (user == null) {
+    res.redirect('/')
+    return
+  }
+
+  Item.findById(req.params.itemid, (err, item) => {
+    if (err) {
+      return next(err)
+    }
+    // if(item.interested._id)
   })
 })
 
