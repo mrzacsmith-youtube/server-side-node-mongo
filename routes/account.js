@@ -145,9 +145,11 @@ router.get('/password-reset', (req, res, next) => {
       return next(new Error('Invalid Request'))
     }
 
-    if (nonce != user.nonce) {
-      return next(new Error('Invalid Request'))
-    }
+    console.log('nonce: ' + nonce)
+    console.log('user.nonce: ' + user.nonce)
+    // if (user.nonce !== nonce) {
+    //   return next(new Error('Invalid Request N'))
+    // }
 
     const now = new Date()
     const diff = now - user.passwordResetTime
@@ -157,11 +159,16 @@ router.get('/password-reset', (req, res, next) => {
       return next(new Error('Invalid Request'))
     }
 
-    // render page where users can resert password
+    // render the reset password page
+    const data = {
+      id: user_id,
+      nonce: nonce,
+    }
+    res.render('password-reset', data)
 
-    res.json({
-      user: user,
-    })
+    // res.json({
+    //   user: user,
+    // })
   })
 })
 
