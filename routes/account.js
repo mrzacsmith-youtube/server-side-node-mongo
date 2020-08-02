@@ -1,4 +1,5 @@
 const router = require('express').Router()
+const Mailgun = require('mailgun-js')
 const Item = require('../models/Item')
 const User = require('../models/User')
 
@@ -76,7 +77,7 @@ router.get('/removeitem/:itemid', (req, res) => {
   })
 })
 
-router.post('/resetpassword', (req, res) => {
+router.post('/resetpassword', (req, res, next) => {
   User.findOne({ email: req.body.email }, (err, user) => {
     if (err) return next(err)
 
@@ -85,13 +86,35 @@ router.post('/resetpassword', (req, res) => {
       return
     }
 
-    user.nonce = 'random string'
+    user.nonce = randomString(12)
     user.passwordResetTime = new Date()
     user.save()
-    res.json({
-      confirmation: 'success',
-      data: 'Reset password',
-      user: user,
+
+    const mailgun = Mailgun({
+      apiKey: process.env.API_KEY,
+      domain: process.env.DOMAIN,
+    })
+
+    console.log('email', req.body.email)
+
+    const data = {
+      to: req.body.email,
+      from: 'Node Store',
+      // sender: 'Node Store',
+      subject: 'Password Reset Request',
+      html: 'This is a test email',
+    }
+
+    mailgun.messages().send(data, (error, body) => {
+      if (err) {
+        return next(err)
+      }
+      console.log('mailgun should be sending ' + req.body.email + ' email now!')
+      res.json({
+        confirmation: 'success',
+        data: 'Reset password',
+        user: user,
+      })
     })
   })
 })
