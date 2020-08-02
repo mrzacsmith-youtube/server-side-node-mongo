@@ -122,6 +122,49 @@ router.post('/resetpassword', (req, res, next) => {
   })
 })
 
+router.get('/password-reset', (req, res, next) => {
+  const nonce = req.query.nonce
+  if (nonce == null) {
+    return next(new Error('Invalid request'))
+  }
+  const user_id = req.query.id
+  if (user_id == null) {
+    return next(new Error('Invalud request'))
+  }
+
+  User.findById(user_id, (err, user) => {
+    if (err) {
+      return next(new Error('Invalid Request'))
+    }
+
+    if (user.passwordResetTime == null) {
+      return next(new Error('Invalid Request'))
+    }
+
+    if ((user.nonce = null)) {
+      return next(new Error('Invalid Request'))
+    }
+
+    if (nonce != user.nonce) {
+      return next(new Error('Invalid Request'))
+    }
+
+    const now = new Date()
+    const diff = now - user.passwordResetTime
+    const seconds = diff / 1000
+
+    if (seconds > 24 * 60 * 60) {
+      return next(new Error('Invalid Request'))
+    }
+
+    // render page where users can resert password
+
+    res.json({
+      user: user,
+    })
+  })
+})
+
 router.get('/logout', (req, res, next) => {
   req.logout()
   res.redirect('/')
