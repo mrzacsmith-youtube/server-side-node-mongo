@@ -95,21 +95,24 @@ router.post('/resetpassword', (req, res, next) => {
       domain: process.env.DOMAIN,
     })
 
-    console.log('email', req.body.email)
-
     const data = {
+      from: 'Node Store <zrs3141592@gmail.com>',
       to: req.body.email,
-      from: 'Node Store',
       // sender: 'Node Store',
       subject: 'Password Reset Request',
-      html: 'This is a test email',
+      html: `Please click <a style="color:red;" href="http://localhost:5005/account/password-reset?nonce=${user.nonce}&id=${user._id}">HERE</a> to reset your password. This link is good for 24 hours only!`,
     }
 
     mailgun.messages().send(data, (error, body) => {
       if (err) {
         return next(err)
       }
-      console.log('mailgun should be sending ' + req.body.email + ' email now!')
+      console.log(
+        'mailgun should be sending ' +
+          req.body.email +
+          ' email now!\nWith a body of ' +
+          body
+      )
       res.json({
         confirmation: 'success',
         data: 'Reset password',
