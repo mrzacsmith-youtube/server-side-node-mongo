@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const Item = require('../models/Item')
+const User = require('../models/User')
 
 router.get('/', (req, res, next) => {
   const user = req.user
@@ -66,10 +67,19 @@ router.get('/removeitem/:itemid', (req, res) => {
 })
 
 router.post('/resetpassword', (req, res) => {
-  res.json({
-    confirmation: 'success',
-    data: 'Reset password',
-    email: req.body.email,
+  User.findOne({ email: req.body.email }, (err, user) => {
+    if (err) return next(err)
+
+    if (user == null) {
+      res.redirect('/')
+      return
+    }
+
+    res.json({
+      confirmation: 'success',
+      data: 'Reset password',
+      user: user,
+    })
   })
 })
 
