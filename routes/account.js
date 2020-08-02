@@ -2,6 +2,16 @@ const router = require('express').Router()
 const Item = require('../models/Item')
 const User = require('../models/User')
 
+const randomString = (length) => {
+  let text = ''
+  const possible =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghiljklmnopqrstuvwxyz0123456789'
+  for (let i = 0; i < length; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length))
+  }
+  return text
+}
+
 router.get('/', (req, res, next) => {
   const user = req.user
 
@@ -75,6 +85,9 @@ router.post('/resetpassword', (req, res) => {
       return
     }
 
+    user.nonce = 'random string'
+    user.passwordResetTime = new Date()
+    user.save()
     res.json({
       confirmation: 'success',
       data: 'Reset password',

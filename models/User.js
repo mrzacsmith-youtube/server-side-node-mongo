@@ -5,6 +5,8 @@ const User = new mongoose.Schema({
   password: { type: String, default: '' },
   isAdmin: { type: Boolean, default: false },
   timestamp: { type: Date, default: Date.now },
+  nonce: { type: String, default: null },
+  passwordResetTime: { type: Date, default: null },
 })
 
 module.exports = mongoose.model('User', User)
