@@ -114,11 +114,17 @@ router.post('/resetpassword', (req, res, next) => {
           ' email now!\nWith a body of ' +
           body
       )
-      res.json({
-        confirmation: 'success',
-        data: 'Reset password',
-        user: user,
-      })
+
+      // setTimeout(() => {
+      //   res.redirect('/')
+      // }, 2000)
+      res.render('reset-info')
+
+      // res.json({
+      //   confirmation: 'success',
+      //   data: 'Reset password',
+      //   user: user,
+      // })
     })
   })
 })
