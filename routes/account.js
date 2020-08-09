@@ -2,6 +2,7 @@ const router = require('express').Router()
 const Mailgun = require('mailgun-js')
 const Item = require('../models/Item')
 const User = require('../models/User')
+const bcrypt = require('bcryptjs')
 
 const randomString = (length) => {
   let text = ''
@@ -133,15 +134,17 @@ router.get('/password-reset', (req, res, next) => {
   }
 
   User.findById(user_id, (err, user) => {
+    console.log('user ' + user)
     if (err) {
       return next(new Error('Invalid Request'))
     }
-
+    console.log('user password reset ' + user.passwordResetTime)
     if (user.passwordResetTime == null) {
       return next(new Error('Invalid Request'))
     }
 
     if ((user.nonce = null)) {
+      console.log('user.nonce inside: ' + user.nonce)
       return next(new Error('Invalid Request'))
     }
 
@@ -168,6 +171,7 @@ router.get('/password-reset', (req, res, next) => {
 
     // res.json({
     //   user: user,
+    //   seconds: seconds,
     // })
   })
 })
@@ -175,6 +179,64 @@ router.get('/password-reset', (req, res, next) => {
 router.get('/logout', (req, res, next) => {
   req.logout()
   res.redirect('/')
+})
+
+router.post('/newpassword', (req, res, next) => {
+  const password1 = req.body.password1
+  if (password1 == null) {
+    return next(new Error('Invalid Request'))
+  }
+
+  const password2 = req.body.password2
+  if (password2 == null) {
+    return next(new Error('Invalid Request'))
+  }
+
+  const nonce = req.body.nonce
+  if (nonce == null) {
+    return next(new Error('Invalid Request'))
+  }
+
+  const user_id = req.body.id
+  if (user_id == null) {
+    return next(new Error('Invalid Request'))
+  }
+
+  if (password1 != password2) {
+    return next(new Error('Passwords do not match'))
+  }
+
+  User.findById(user_id, (err, user) => {
+    if (err) {
+      return next(err)
+    }
+
+    if (user.passwordResetTime == null) {
+      return next(new Error('Invalid Request'))
+    }
+
+    if (user.nonce == null) {
+      return next(new Error('Invalid Request'))
+    }
+
+    if (nonce != user.nonce) {
+      return next(new Error('Invalid Request'))
+    }
+
+    const now = Date.now()
+    const diff = now - user.passwordResetTime
+    const seconds = diff / 1000
+
+    if (seconds > 24 * 60 * 60) {
+      return next(new Error('Invalid Request'))
+    }
+    const hashPassword = bcrypt.hashSync(password1, 10)
+
+    user.password = hashPassword
+    user.save()
+
+    res.redirect('/')
+  })
 })
 
 module.exports = router
